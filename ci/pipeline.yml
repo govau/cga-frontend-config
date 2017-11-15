@@ -1,0 +1,75 @@
+resources:
+- name: ops.git
+  type: git
+  source:
+    branch: master
+    private_key: {{ops-git-deploy-key}}
+    uri: {{ops-git-uri}}
+    paths:
+    - frontend/config-bucket/**
+- name: this.git
+  type: git
+  source:
+    branch: ci #TODO change to master after merged
+    uri: https://github.com/govau/cga-frontend-config
+- name: certs-d.s3
+  type: s3
+  source: &certs
+    bucket: {{aws-bucket-d}}
+    region_name: ap-southeast-2
+    versioned_file: le-responder/current-certificates.tgz
+    access_key_id: {{aws-access-key-id-d}}
+    secret_access_key: {{aws-secret-access-key-d}}
+    server_side_encryption: AES256
+- name: certs-g.s3
+  type: s3
+  source:
+    <<: *certs
+    bucket: {{aws-bucket-g}}
+    access_key_id: {{aws-access-key-id-g}}
+    secret_access_key: {{aws-secret-access-key-g}}
+- name: release-d.s3
+  type: s3
+  source: &release
+    bucket: {{aws-bucket-d}}
+    region_name: ap-southeast-2
+    versioned_file: release.tgz
+    access_key_id: {{aws-access-key-id-d}}
+    secret_access_key: {{aws-secret-access-key-d}}
+    server_side_encryption: AES256
+- name: release-g.s3
+  type: s3
+  source:
+    <<: *release
+    bucket: {{aws-bucket-g}}
+    access_key_id: {{aws-access-key-id-g}}
+    secret_access_key: {{aws-secret-access-key-g}}
+jobs:
+- name: create-d
+  plan:
+  - aggregate:
+    - get: certs.s3
+      resource: certs-d.s3
+      trigger: true
+    - get: ops.git
+      trigger: true
+    - get: this.git
+  - task: create-release
+    file: this.git/ci/tasks/create-release.yml
+  - put: release-d.s3
+    params:
+      file: releases/release.tgz
+- name: create-g
+  plan:
+  - aggregate:
+    - get: certs.s3
+      resource: certs-g.s3
+      trigger: true
+    - get: ops.git
+      trigger: true
+    - get: this.git
+  - task: create-release
+    file: this.git/ci/tasks/create-release.yml
+  - put: release-g.s3
+    params:
+      file: release/release.tgz
