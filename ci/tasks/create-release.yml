@@ -1,0 +1,17 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  #todo maybe there is a more suitable docker image with haproxy+ssl?
+  source: {repository: haproxy}
+  #todo pin to 1.7.9
+
+inputs:
+- name: certs.s3
+- name: ops.git
+- name: this.git
+outputs:
+- name: release
+run:
+  path: this.git/ci/scripts/create-release.sh
+params:
