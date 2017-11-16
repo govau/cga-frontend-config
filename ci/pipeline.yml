@@ -11,7 +11,7 @@ resources:
 - name: this.git
   type: git
   source:
-    branch: ci
+    branch: master
     uri: https://github.com/govau/cga-frontend-config
 - name: certs-d.s3
   type: s3
