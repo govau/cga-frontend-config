@@ -44,32 +44,55 @@ resources:
     bucket: {{aws-bucket-g}}
     access_key_id: {{aws-access-key-id-g}}
     secret_access_key: {{aws-secret-access-key-g}}
+- name: slack
+  type: slack-notification
+  source:
+    url: {{slack-webhook-url}}
+resource_types:
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
 jobs:
-- name: create-d
+- name: d-cld
   plan:
-  - aggregate:
-    - get: certs.s3
-      resource: certs-d.s3
-      trigger: true
-    - get: ops.git
-      trigger: true
-    - get: this.git
-  - task: create-release
-    file: this.git/ci/tasks/create-release.yml
-  - put: release-d.s3
-    params:
-      file: releases/release.tgz
-- name: create-g
+  - do:
+    - aggregate:
+      - get: certs.s3
+        resource: certs-d.s3
+        trigger: true
+      - get: ops.git
+        trigger: true
+      - get: this.git
+    - task: create-release
+      file: this.git/ci/tasks/create-release.yml
+    - put: release-d.s3
+      params:
+        file: release/release.tgz
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: g-cld
   plan:
-  - aggregate:
-    - get: certs.s3
-      resource: certs-g.s3
-      trigger: true
-    - get: ops.git
-      trigger: true
-    - get: this.git
-  - task: create-release
-    file: this.git/ci/tasks/create-release.yml
-  - put: release-g.s3
-    params:
-      file: release/release.tgz
+  - do:
+    - aggregate:
+      - get: certs.s3
+        resource: certs-g.s3
+        trigger: true
+      - get: ops.git
+        trigger: true
+      - get: this.git
+    - task: create-release
+      file: this.git/ci/tasks/create-release.yml
+    - put: release-g.s3
+      params:
+        file: release/release.tgz
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
