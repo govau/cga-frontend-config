@@ -13,6 +13,15 @@ resources:
   source:
     branch: master
     uri: https://github.com/govau/cga-frontend-config
+- name: certs-b.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-b}}
+    bucket: {{aws-bucket-b}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-b}}
+    server_side_encryption: AES256
+    versioned_file: le-responder/current-certificates.tgz
 - name: certs-d.s3
   type: s3
   source:
@@ -31,6 +40,24 @@ resources:
     secret_access_key: {{aws-secret-access-key-g}}
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
+- name: certs-y.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-y}}
+    bucket: {{aws-bucket-y}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-y}}
+    server_side_encryption: AES256
+    versioned_file: le-responder/current-certificates.tgz
+- name: release-b.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-b}}
+    bucket: {{aws-bucket-b}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-b}}
+    server_side_encryption: AES256
+    versioned_file: release.tgz
 - name: release-d.s3
   type: s3
   source:
@@ -49,6 +76,15 @@ resources:
     secret_access_key: {{aws-secret-access-key-g}}
     server_side_encryption: AES256
     versioned_file: release.tgz
+- name: release-y.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-y}}
+    bucket: {{aws-bucket-y}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-y}}
+    server_side_encryption: AES256
+    versioned_file: release.tgz
 - name: slack
   type: slack-notification
   source:
@@ -59,7 +95,58 @@ resource_types:
   source:
     repository: cfcommunity/slack-notification-resource
 jobs:
-- name: d-cld
+- name: create-b-cld
+  plan:
+  - do:
+    - aggregate:
+      - get: certs.s3
+        trigger: true
+        resource: certs-b.s3
+      - get: ops.git
+        trigger: true
+      - get: this.git
+    - task: create-release
+      file: this.git/ci/tasks/create-release.yml
+    - put: release-b.s3
+      params:
+        file: release/release.tgz
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: deploy-b-cld
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: release.s3
+        passed:
+        - create-b-cld
+        trigger: true
+        resource: release-b.s3
+      - get: this.git
+        passed:
+        - create-b-cld
+    - task: deploy-release
+      file: this.git/ci/tasks/deploy-release.yml
+      params:
+        ENV_NAME: b
+        JUMPBOX_SSH_KEY: {{jumpbox-key}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME SUCCESS
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: create-d-cld
   plan:
   - do:
     - aggregate:
@@ -80,7 +167,37 @@ jobs:
         text: |
           :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-- name: g-cld
+- name: deploy-d-cld
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: release.s3
+        passed:
+        - create-d-cld
+        trigger: true
+        resource: release-d.s3
+      - get: this.git
+        passed:
+        - create-d-cld
+    - task: deploy-release
+      file: this.git/ci/tasks/deploy-release.yml
+      params:
+        ENV_NAME: d
+        JUMPBOX_SSH_KEY: {{jumpbox-key}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME SUCCESS
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: create-g-cld
   plan:
   - do:
     - aggregate:
@@ -100,4 +217,85 @@ jobs:
       params:
         text: |
           :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: deploy-g-cld
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: release.s3
+        passed:
+        - create-g-cld
+        trigger: true
+        resource: release-g.s3
+      - get: this.git
+        passed:
+        - create-g-cld
+    - task: deploy-release
+      file: this.git/ci/tasks/deploy-release.yml
+      params:
+        ENV_NAME: g
+        JUMPBOX_SSH_KEY: {{jumpbox-key}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME SUCCESS
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: create-y-cld
+  plan:
+  - do:
+    - aggregate:
+      - get: certs.s3
+        trigger: true
+        resource: certs-y.s3
+      - get: ops.git
+        trigger: true
+      - get: this.git
+    - task: create-release
+      file: this.git/ci/tasks/create-release.yml
+    - put: release-y.s3
+      params:
+        file: release/release.tgz
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: deploy-y-cld
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: release.s3
+        passed:
+        - create-y-cld
+        trigger: true
+        resource: release-y.s3
+      - get: this.git
+        passed:
+        - create-y-cld
+    - task: deploy-release
+      file: this.git/ci/tasks/deploy-release.yml
+      params:
+        ENV_NAME: "y"
+        JUMPBOX_SSH_KEY: {{jumpbox-key}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME FAILED
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME SUCCESS
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
