@@ -103,6 +103,8 @@ jobs:
         trigger: true
         resource: certs-b.s3
       - get: ops.git
+        passed:
+        - ship-it
         trigger: true
       - get: this.git
     - task: create-release
@@ -154,6 +156,8 @@ jobs:
         trigger: true
         resource: certs-d.s3
       - get: ops.git
+        passed:
+        - create-g-cld
         trigger: true
       - get: this.git
     - task: create-release
@@ -256,6 +260,8 @@ jobs:
         trigger: true
         resource: certs-y.s3
       - get: ops.git
+        passed:
+        - create-d-cld
         trigger: true
       - get: this.git
     - task: create-release
@@ -299,3 +305,8 @@ jobs:
         text: |
           :white_check_mark: $BUILD_PIPELINE_NAME $BUILD_JOB_NAME SUCCESS
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: ship-it
+  plan:
+  - get: ops.git
+    passed:
+    - create-y-cld
