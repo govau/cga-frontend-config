@@ -11,7 +11,11 @@ mkdir release-candidate
 
 cp -rf ops.git/frontend/config-bucket/* release-candidate
 
-mkdir release-candidate/certs
+# This directory is managed by the cert manager, but it might already exist in
+# the repo for testing purposes
+mkdir -p release-candidate/certs
+rm -rf release-candidate/certs/*
+
 tar xvfz certs.s3/current-certificates.tgz -C release-candidate/certs
 
 # Now the release-candidate dir contains an extracted haproxy config we can
