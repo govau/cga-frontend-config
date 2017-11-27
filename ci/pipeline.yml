@@ -156,8 +156,6 @@ jobs:
         trigger: true
         resource: certs-d.s3
       - get: ops.git
-        passed:
-        - create-g-cld
         trigger: true
       - get: this.git
     - task: create-release
@@ -260,8 +258,6 @@ jobs:
         trigger: true
         resource: certs-y.s3
       - get: ops.git
-        passed:
-        - create-d-cld
         trigger: true
       - get: this.git
     - task: create-release
