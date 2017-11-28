@@ -27,9 +27,19 @@ useradd vcap
 
 export HAPROXY_FILES_DIR=release-candidate/
 export HAPROXY_CERTS_DIR=release-candidate/certs/
+declare -a ENV
+# If the config relies on environment variables, it should provide sample values
+# in this file for testing
+if [[ -e release-candidate/test_vars ]]
+then
+  # Read variable assignments into an array called ENV
+  # We whitelist variables starting with FE_, and the env command treats an
+  # argument as a variable assignment if it contains an =
+  readarray -t ENV < <(grep '^FE_.*=' release-candidate/test_vars)
+fi
 
-# get haproxy to check the config files
-haproxy -c -V -- release-candidate/configs/*.cfg release-candidate/haproxy.d/*.cfg
+# get haproxy to check the config file (using the provided environment variables)
+env "${ENV[@]}" haproxy -c -V -- release-candidate/configs/*.cfg release-candidate/haproxy.d/*.cfg
 
 # Create a release tarball
 pushd release-candidate
