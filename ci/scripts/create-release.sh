@@ -2,6 +2,7 @@
 
 set -euo pipefail
 set -v
+shopt -s nullglob
 
 # A release candidate consists of config and certs for haproxy.
 # We build the RC from our inputs, validate it, and if successful promote it
@@ -27,8 +28,8 @@ useradd vcap
 export HAPROXY_FILES_DIR=release-candidate/
 export HAPROXY_CERTS_DIR=release-candidate/certs/
 
-# get haproxy to check the config file
-haproxy -c -V -f release-candidate/configs/main.cfg
+# get haproxy to check the config files
+haproxy -c -V -- release-candidate/configs/*.cfg release-candidate/haproxy.d/*.cfg
 
 # Create a release tarball
 pushd release-candidate
