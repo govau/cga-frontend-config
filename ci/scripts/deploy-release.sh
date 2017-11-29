@@ -4,7 +4,7 @@ set -euo pipefail
 set -v
 
 # There is a script on each router which will load the latest release
-# from the s3 bucket: https://github.com/govau/acme-proxy-boshrelease/blob/master/jobs/haproxy/templates/fetch_extra_files.erb
+# from the s3 bucket: https://github.com/govau/dta-frontend/blob/master/jobs/haproxy/templates/update
 # To deploy the latest release we ssh to each gorouter and run this script.
 
 : "${ENV_NAME:?Need to set ENV_NAME e.g. d}"
@@ -25,7 +25,7 @@ ssh-keyscan -H ${JUMPBOX} > ${KNOWN_HOSTS}
 # Create a script to run on the environment's jumpbox, which will
 # trigger each router instance to reload it's configuration to use
 # the current release.
-cat >> frontend-config-deploy.sh <<'EOF'
+cat > frontend-config-deploy.sh <<'EOF'
 #!/bin/bash
 
 set -euo pipefail
@@ -34,14 +34,11 @@ set -v
 # login to bosh director
 source ~/bosh-bootstrap/bin/admin-login.sh
 
-# The number of router instances in this environment's cf deployment
-bosh manifest -d cf > /tmp/cf-deployment-manifest.yml
-ROUTER_INSTANCE_COUNT=$(bosh int /tmp/cf-deployment-manifest.yml --path /instance_groups/name=router/instances)
-
-for INSTANCE in `seq 0 $(expr $ROUTER_INSTANCE_COUNT - 1)`;
+bosh -e main -d cf instances | awk '/^router\// { print $1 }' |
+while read INSTANCE
 do
-  echo "Updating router/$INSTANCE"
-  bosh ssh -d cf router/$INSTANCE \
+  echo "Updating $INSTANCE"
+  bosh ssh -d cf "$INSTANCE" \
     sudo /var/vcap/jobs/haproxy/bin/update release.tgz
   # todo do we need our own error checking here?
 done
