@@ -26,7 +26,6 @@ tar xvfz certs.s3/current-certificates.tgz -C release-candidate/certs
 useradd vcap
 
 export HAPROXY_FILES_DIR=release-candidate/
-export HAPROXY_CERTS_DIR=release-candidate/certs/
 declare -a ENV
 # If the config relies on environment variables, it should provide sample values
 # in this file for testing
