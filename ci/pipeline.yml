@@ -136,6 +136,8 @@ jobs:
       params:
         ENV_NAME: b
         JUMPBOX_SSH_KEY: {{jumpbox-key}}
+        JUMPBOX_SSH_PORT: {{jumpbox-port}}
+        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
     on_failure:
       put: slack
       params:
@@ -187,6 +189,8 @@ jobs:
       params:
         ENV_NAME: d
         JUMPBOX_SSH_KEY: {{jumpbox-key}}
+        JUMPBOX_SSH_PORT: {{jumpbox-port}}
+        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
     on_failure:
       put: slack
       params:
@@ -238,6 +242,8 @@ jobs:
       params:
         ENV_NAME: g
         JUMPBOX_SSH_KEY: {{jumpbox-key}}
+        JUMPBOX_SSH_PORT: {{jumpbox-port}}
+        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
     on_failure:
       put: slack
       params:
@@ -289,6 +295,8 @@ jobs:
       params:
         ENV_NAME: "y"
         JUMPBOX_SSH_KEY: {{jumpbox-key}}
+        JUMPBOX_SSH_PORT: {{jumpbox-port}}
+        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
     on_failure:
       put: slack
       params:
