@@ -9,6 +9,8 @@ set -v
 
 : "${ENV_NAME:?Need to set ENV_NAME e.g. d}"
 : "${JUMPBOX_SSH_KEY:?Need to set JUMPBOX_SSH_KEY}"
+: "${JUMPBOX_SSH_PORT:?Need to set JUMPBOX_SSH_PORT}"
+: "${JUMPBOX_SSH_KNOWN_HOSTS:?Need to set JUMPBOX_SSH_KNOWN_HOSTS}"
 
 JUMPBOX=bosh-jumpbox.${ENV_NAME}.cld.gov.au
 PATH_TO_KEY=${PWD}/jumpbox.pem
@@ -17,10 +19,11 @@ PATH_TO_KEY=${PWD}/jumpbox.pem
 echo "${JUMPBOX_SSH_KEY}">${PATH_TO_KEY}
 chmod 600 ${PATH_TO_KEY}
 
-# preload the jumpbox host key
-mkdir ~/.ssh
-KNOWN_HOSTS=~/.ssh/known_hosts
-ssh-keyscan -H ${JUMPBOX} > ${KNOWN_HOSTS}
+# Add  CA as cert authority for jumpboxes
+mkdir -p $HOME/.ssh
+cat <<EOF >> $HOME/.ssh/known_hosts
+${JUMPBOX_SSH_KNOWN_HOSTS}
+EOF
 
 # Create a script to run on the environment's jumpbox, which will
 # trigger each router instance to reload it's configuration to use
@@ -47,6 +50,6 @@ EOF
 
 chmod a+x frontend-config-deploy.sh
 
-scp -i ${PATH_TO_KEY} frontend-config-deploy.sh ec2-user@$JUMPBOX:.
+scp -i ${PATH_TO_KEY} -P ${JUMPBOX_SSH_PORT} frontend-config-deploy.sh ec2-user@$JUMPBOX:.
 
-ssh -i ${PATH_TO_KEY} ec2-user@$JUMPBOX ./frontend-config-deploy.sh
+ssh -i ${PATH_TO_KEY} -p ${JUMPBOX_SSH_PORT} ec2-user@$JUMPBOX ./frontend-config-deploy.sh
