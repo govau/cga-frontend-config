@@ -3,8 +3,9 @@ platform: linux
 image_resource:
   type: docker-image
   #todo maybe there is a more suitable docker image with haproxy+ssl?
-  source: {repository: haproxy}
-  #todo pin to 1.7.9
+  source:
+    repository: haproxy
+    tag: "1.8" # pin to same major versions that we deploy
 
 inputs:
 - name: certs.s3
