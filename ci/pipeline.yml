@@ -22,6 +22,24 @@ resources:
     secret_access_key: {{aws-secret-access-key-b}}
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
+- name: apps-certs-b.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-b}}
+    bucket: {{aws-bucket-b}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-b}}
+    server_side_encryption: AES256
+    versioned_file: star.apps.b.cld.gov.au.crt
+- name: system-certs-b.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-b}}
+    bucket: {{aws-bucket-b}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-b}}
+    server_side_encryption: AES256
+    versioned_file: star.system.b.cld.gov.au.crt
 - name: certs-d.s3
   type: s3
   source:
@@ -31,6 +49,24 @@ resources:
     secret_access_key: {{aws-secret-access-key-d}}
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
+- name: apps-certs-d.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-d}}
+    bucket: {{aws-bucket-d}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-d}}
+    server_side_encryption: AES256
+    versioned_file: star.apps.d.cld.gov.au.crt
+- name: system-certs-d.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-d}}
+    bucket: {{aws-bucket-d}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-d}}
+    server_side_encryption: AES256
+    versioned_file: star.system.d.cld.gov.au.crt
 - name: certs-g.s3
   type: s3
   source:
@@ -40,6 +76,24 @@ resources:
     secret_access_key: {{aws-secret-access-key-g}}
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
+- name: apps-certs-g.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-g}}
+    bucket: {{aws-bucket-g}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-g}}
+    server_side_encryption: AES256
+    versioned_file: star.apps.g.cld.gov.au.crt
+- name: system-certs-g.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-g}}
+    bucket: {{aws-bucket-g}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-g}}
+    server_side_encryption: AES256
+    versioned_file: star.system.g.cld.gov.au.crt
 - name: certs-y.s3
   type: s3
   source:
@@ -49,6 +103,24 @@ resources:
     secret_access_key: {{aws-secret-access-key-y}}
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
+- name: apps-certs-y.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-y}}
+    bucket: {{aws-bucket-y}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-y}}
+    server_side_encryption: AES256
+    versioned_file: star.apps.y.cld.gov.au.crt
+- name: system-certs-y.s3
+  type: s3
+  source:
+    access_key_id: {{aws-access-key-id-y}}
+    bucket: {{aws-bucket-y}}
+    region_name: ap-southeast-2
+    secret_access_key: {{aws-secret-access-key-y}}
+    server_side_encryption: AES256
+    versioned_file: star.system.y.cld.gov.au.crt
 - name: release-b.s3
   type: s3
   source:
@@ -102,6 +174,12 @@ jobs:
       - get: certs.s3
         trigger: true
         resource: certs-b.s3
+      - get: apps-certs.s3
+        trigger: true
+        resource: apps-certs-b.s3
+      - get: system-certs.s3
+        trigger: true
+        resource: system-certs-b.s3
       - get: ops.git
         passed:
         - ship-it
@@ -157,6 +235,12 @@ jobs:
       - get: certs.s3
         trigger: true
         resource: certs-d.s3
+      - get: apps-certs.s3
+        trigger: true
+        resource: apps-certs-d.s3
+      - get: system-certs.s3
+        trigger: true
+        resource: system-certs-d.s3
       - get: ops.git
         trigger: true
       - get: this.git
@@ -210,6 +294,12 @@ jobs:
       - get: certs.s3
         trigger: true
         resource: certs-g.s3
+      - get: apps-certs.s3
+        trigger: true
+        resource: apps-certs-g.s3
+      - get: system-certs.s3
+        trigger: true
+        resource: system-certs-g.s3
       - get: ops.git
         trigger: true
       - get: this.git
@@ -263,6 +353,12 @@ jobs:
       - get: certs.s3
         trigger: true
         resource: certs-y.s3
+      - get: apps-certs.s3
+        trigger: true
+        resource: apps-certs-y.s3
+      - get: system-certs.s3
+        trigger: true
+        resource: system-certs-y.s3
       - get: ops.git
         trigger: true
       - get: this.git

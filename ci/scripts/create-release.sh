@@ -18,6 +18,8 @@ mkdir -p release-candidate/certs
 rm -rf release-candidate/certs/*
 
 tar xvfz certs.s3/current-certificates.tgz -C release-candidate/certs
+cp apps-certs.s3/*.crt   release-candidate/certs/
+cp system-certs.s3/*.crt release-candidate/certs/
 
 # Now the release-candidate dir contains an extracted haproxy config we can
 # validate
