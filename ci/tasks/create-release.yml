@@ -9,6 +9,8 @@ image_resource:
 
 inputs:
 - name: certs.s3
+- name: apps-certs.s3
+- name: system-certs.s3
 - name: ops.git
 - name: this.git
 outputs:
