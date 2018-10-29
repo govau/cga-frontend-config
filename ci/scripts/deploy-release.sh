@@ -37,7 +37,7 @@ set -v
 # login to bosh director
 source ~/bosh-bootstrap/bin/admin-login.sh
 
-bosh -e main -d cf instances | awk '/^router\// { print $1 }' |
+bosh -d cf instances | awk '/^router\// { print $1 }' |
 while read INSTANCE
 do
   echo "Updating $INSTANCE"
