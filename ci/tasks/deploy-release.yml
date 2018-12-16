@@ -5,6 +5,7 @@ image_resource:
   source: {repository: govau/cga-cf-bosh-cli}
 inputs:
 - name: this.git
+- name: ops.git
 run:
   path: this.git/ci/scripts/deploy-release.sh
 params:

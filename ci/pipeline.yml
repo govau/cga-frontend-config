@@ -6,8 +6,9 @@ resources:
     branch: master
     paths:
     - frontend/config-bucket/**
-    private_key: {{ops-git-deploy-key}}
-    uri: {{ops-git-uri}}
+    - ops/terraform/sshca-ca.pub
+    private_key: ((ops-git-deploy-key))
+    uri: ((ops-git-uri))
 - name: this.git
   type: git
   source:
@@ -16,151 +17,151 @@ resources:
 - name: certs-b.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-b}}
-    bucket: {{aws-bucket-b}}
+    access_key_id: ((aws-access-key-id-b))
+    bucket: ((aws-bucket-b))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-b}}
+    secret_access_key: ((aws-secret-access-key-b))
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
 - name: apps-certs-b.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-b}}
-    bucket: {{aws-bucket-b}}
+    access_key_id: ((aws-access-key-id-b))
+    bucket: ((aws-bucket-b))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-b}}
+    secret_access_key: ((aws-secret-access-key-b))
     server_side_encryption: AES256
     versioned_file: star.apps.b.cld.gov.au.crt
 - name: system-certs-b.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-b}}
-    bucket: {{aws-bucket-b}}
+    access_key_id: ((aws-access-key-id-b))
+    bucket: ((aws-bucket-b))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-b}}
+    secret_access_key: ((aws-secret-access-key-b))
     server_side_encryption: AES256
     versioned_file: star.system.b.cld.gov.au.crt
 - name: certs-d.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-d}}
-    bucket: {{aws-bucket-d}}
+    access_key_id: ((aws-access-key-id-d))
+    bucket: ((aws-bucket-d))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-d}}
+    secret_access_key: ((aws-secret-access-key-d))
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
 - name: apps-certs-d.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-d}}
-    bucket: {{aws-bucket-d}}
+    access_key_id: ((aws-access-key-id-d))
+    bucket: ((aws-bucket-d))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-d}}
+    secret_access_key: ((aws-secret-access-key-d))
     server_side_encryption: AES256
     versioned_file: star.apps.d.cld.gov.au.crt
 - name: system-certs-d.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-d}}
-    bucket: {{aws-bucket-d}}
+    access_key_id: ((aws-access-key-id-d))
+    bucket: ((aws-bucket-d))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-d}}
+    secret_access_key: ((aws-secret-access-key-d))
     server_side_encryption: AES256
     versioned_file: star.system.d.cld.gov.au.crt
 - name: certs-g.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-g}}
-    bucket: {{aws-bucket-g}}
+    access_key_id: ((aws-access-key-id-g))
+    bucket: ((aws-bucket-g))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-g}}
+    secret_access_key: ((aws-secret-access-key-g))
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
 - name: apps-certs-g.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-g}}
-    bucket: {{aws-bucket-g}}
+    access_key_id: ((aws-access-key-id-g))
+    bucket: ((aws-bucket-g))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-g}}
+    secret_access_key: ((aws-secret-access-key-g))
     server_side_encryption: AES256
     versioned_file: star.apps.g.cld.gov.au.crt
 - name: system-certs-g.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-g}}
-    bucket: {{aws-bucket-g}}
+    access_key_id: ((aws-access-key-id-g))
+    bucket: ((aws-bucket-g))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-g}}
+    secret_access_key: ((aws-secret-access-key-g))
     server_side_encryption: AES256
     versioned_file: star.system.g.cld.gov.au.crt
 - name: certs-y.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-y}}
-    bucket: {{aws-bucket-y}}
+    access_key_id: ((aws-access-key-id-y))
+    bucket: ((aws-bucket-y))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-y}}
+    secret_access_key: ((aws-secret-access-key-y))
     server_side_encryption: AES256
     versioned_file: le-responder/current-certificates.tgz
 - name: apps-certs-y.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-y}}
-    bucket: {{aws-bucket-y}}
+    access_key_id: ((aws-access-key-id-y))
+    bucket: ((aws-bucket-y))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-y}}
+    secret_access_key: ((aws-secret-access-key-y))
     server_side_encryption: AES256
     versioned_file: star.apps.y.cld.gov.au.crt
 - name: system-certs-y.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-y}}
-    bucket: {{aws-bucket-y}}
+    access_key_id: ((aws-access-key-id-y))
+    bucket: ((aws-bucket-y))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-y}}
+    secret_access_key: ((aws-secret-access-key-y))
     server_side_encryption: AES256
     versioned_file: star.system.y.cld.gov.au.crt
 - name: release-b.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-b}}
-    bucket: {{aws-bucket-b}}
+    access_key_id: ((aws-access-key-id-b))
+    bucket: ((aws-bucket-b))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-b}}
+    secret_access_key: ((aws-secret-access-key-b))
     server_side_encryption: AES256
     versioned_file: release.tgz
 - name: release-d.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-d}}
-    bucket: {{aws-bucket-d}}
+    access_key_id: ((aws-access-key-id-d))
+    bucket: ((aws-bucket-d))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-d}}
+    secret_access_key: ((aws-secret-access-key-d))
     server_side_encryption: AES256
     versioned_file: release.tgz
 - name: release-g.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-g}}
-    bucket: {{aws-bucket-g}}
+    access_key_id: ((aws-access-key-id-g))
+    bucket: ((aws-bucket-g))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-g}}
+    secret_access_key: ((aws-secret-access-key-g))
     server_side_encryption: AES256
     versioned_file: release.tgz
 - name: release-y.s3
   type: s3
   source:
-    access_key_id: {{aws-access-key-id-y}}
-    bucket: {{aws-bucket-y}}
+    access_key_id: ((aws-access-key-id-y))
+    bucket: ((aws-bucket-y))
     region_name: ap-southeast-2
-    secret_access_key: {{aws-secret-access-key-y}}
+    secret_access_key: ((aws-secret-access-key-y))
     server_side_encryption: AES256
     versioned_file: release.tgz
 - name: slack
   type: slack-notification
   source:
-    url: {{slack-webhook-url}}
+    url: ((slack-webhook-url))
 resource_types:
 - name: slack-notification
   type: docker-image
@@ -209,13 +210,15 @@ jobs:
       - get: this.git
         passed:
         - create-b-cld
+      - get: ops.git
+        passed:
+        - create-b-cld
     - task: deploy-release
       file: this.git/ci/tasks/deploy-release.yml
       params:
         ENV_NAME: b
-        JUMPBOX_SSH_KEY: {{jumpbox-key}}
-        JUMPBOX_SSH_PORT: {{jumpbox-port}}
-        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
+        JUMPBOX_SSH_KEY: ((jumpbox-key))
+        JUMPBOX_SSH_PORT: ((jumpbox-port))
     on_failure:
       put: slack
       params:
@@ -268,13 +271,15 @@ jobs:
       - get: this.git
         passed:
         - create-d-cld
+      - get: ops.git
+        passed:
+        - create-d-cld
     - task: deploy-release
       file: this.git/ci/tasks/deploy-release.yml
       params:
         ENV_NAME: d
-        JUMPBOX_SSH_KEY: {{jumpbox-key}}
-        JUMPBOX_SSH_PORT: {{jumpbox-port}}
-        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
+        JUMPBOX_SSH_KEY: ((jumpbox-key))
+        JUMPBOX_SSH_PORT: ((jumpbox-port))
     on_failure:
       put: slack
       params:
@@ -327,13 +332,15 @@ jobs:
       - get: this.git
         passed:
         - create-g-cld
+      - get: ops.git
+        passed:
+        - create-g-cld
     - task: deploy-release
       file: this.git/ci/tasks/deploy-release.yml
       params:
         ENV_NAME: g
-        JUMPBOX_SSH_KEY: {{jumpbox-key}}
-        JUMPBOX_SSH_PORT: {{jumpbox-port}}
-        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
+        JUMPBOX_SSH_KEY: ((jumpbox-key))
+        JUMPBOX_SSH_PORT: ((jumpbox-port))
     on_failure:
       put: slack
       params:
@@ -386,13 +393,15 @@ jobs:
       - get: this.git
         passed:
         - create-y-cld
+      - get: ops.git
+        passed:
+        - create-y-cld
     - task: deploy-release
       file: this.git/ci/tasks/deploy-release.yml
       params:
         ENV_NAME: "y"
-        JUMPBOX_SSH_KEY: {{jumpbox-key}}
-        JUMPBOX_SSH_PORT: {{jumpbox-port}}
-        JUMPBOX_SSH_KNOWN_HOSTS: {{jumpbox-known-hosts}}
+        JUMPBOX_SSH_KEY: ((jumpbox-key))
+        JUMPBOX_SSH_PORT: ((jumpbox-port))
     on_failure:
       put: slack
       params:

@@ -10,10 +10,10 @@ set -v
 : "${ENV_NAME:?Need to set ENV_NAME e.g. d}"
 : "${JUMPBOX_SSH_KEY:?Need to set JUMPBOX_SSH_KEY}"
 : "${JUMPBOX_SSH_PORT:?Need to set JUMPBOX_SSH_PORT}"
-: "${JUMPBOX_SSH_KNOWN_HOSTS:?Need to set JUMPBOX_SSH_KNOWN_HOSTS}"
 
 JUMPBOX=bosh-jumpbox.${ENV_NAME}.cld.gov.au
 PATH_TO_KEY=${PWD}/jumpbox.pem
+PATH_TO_OPS=${PWD}/ops.git
 
 # Create the private key for the jumpbox
 echo "${JUMPBOX_SSH_KEY}">${PATH_TO_KEY}
@@ -22,7 +22,7 @@ chmod 600 ${PATH_TO_KEY}
 # Add  CA as cert authority for jumpboxes
 mkdir -p $HOME/.ssh
 cat <<EOF >> $HOME/.ssh/known_hosts
-${JUMPBOX_SSH_KNOWN_HOSTS}
+@cert-authority *.cld.gov.au $(cat ${PATH_TO_OPS}/terraform/sshca-ca.pub)
 EOF
 
 # Create a script to run on the environment's jumpbox, which will
