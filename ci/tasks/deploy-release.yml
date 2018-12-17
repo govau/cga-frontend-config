@@ -11,3 +11,4 @@ run:
 params:
   ENV_NAME:
   JUMPBOX_SSH_KEY:
+  JUMPBOX_SSH_PORT:
