@@ -50,6 +50,6 @@ EOF
 
 chmod a+x frontend-config-deploy.sh
 
-scp -i ${PATH_TO_KEY} -P ${JUMPBOX_SSH_PORT} frontend-config-deploy.sh ec2-user@$JUMPBOX:.
+scp -B -i ${PATH_TO_KEY} -P ${JUMPBOX_SSH_PORT} frontend-config-deploy.sh ec2-user@$JUMPBOX:.
 
-ssh -i ${PATH_TO_KEY} -p ${JUMPBOX_SSH_PORT} ec2-user@$JUMPBOX ./frontend-config-deploy.sh
+ssh -oBatchMode=yes -i ${PATH_TO_KEY} -p ${JUMPBOX_SSH_PORT} ec2-user@$JUMPBOX ./frontend-config-deploy.sh
