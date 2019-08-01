@@ -1,5 +1,12 @@
 groups: []
 resources:
+- name: business-hours
+  type: time
+  source:
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    start: 9:00 AM
+    stop: 5:00 PM
+    location: Australia/Sydney
 - name: ops.git
   type: git
   source:
@@ -263,6 +270,7 @@ jobs:
   plan:
   - do:
     - aggregate:
+      - get: business-hours
       - get: release.s3
         passed:
         - create-d-cld
