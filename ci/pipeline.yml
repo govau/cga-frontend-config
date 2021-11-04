@@ -178,7 +178,7 @@ jobs:
 - name: create-b-cld
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: certs.s3
         trigger: true
         resource: certs-b.s3
@@ -208,7 +208,7 @@ jobs:
   serial: true
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: release.s3
         passed:
         - create-b-cld
@@ -241,7 +241,7 @@ jobs:
 - name: create-d-cld
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: certs.s3
         trigger: true
         resource: certs-d.s3
@@ -269,7 +269,7 @@ jobs:
   serial: true
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: business-hours
       - get: release.s3
         passed:
@@ -303,7 +303,7 @@ jobs:
 - name: create-g-cld
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: certs.s3
         trigger: true
         resource: certs-g.s3
@@ -331,7 +331,7 @@ jobs:
   serial: true
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: release.s3
         passed:
         - create-g-cld
@@ -364,7 +364,7 @@ jobs:
 - name: create-y-cld
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: certs.s3
         trigger: true
         resource: certs-y.s3
@@ -392,7 +392,7 @@ jobs:
   serial: true
   plan:
   - do:
-    - aggregate:
+    - in_parallel:
       - get: release.s3
         passed:
         - create-y-cld
